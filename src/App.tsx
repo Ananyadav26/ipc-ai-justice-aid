@@ -17,6 +17,11 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      {/* Background Elements */}
+      <div className="bg-ellipse-1"></div>
+      <div className="bg-ellipse-2"></div>
+      <div className="bg-ellipse-3"></div>
+      
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />

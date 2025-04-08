@@ -1,13 +1,15 @@
-
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Sidebar } from "@/components/Sidebar";
 import { Navbar } from "@/components/Navbar";
 import { SearchBar } from "@/components/SearchBar";
 import { ResultCard } from "@/components/ResultCard";
+import { CasePrediction } from "@/components/CasePrediction";
 import { Button } from "@/components/ui/button";
 import { ipcSections, IPCSection } from "@/lib/ipcData";
 import { ArrowLeft, FileText, FilePenLine } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface SearchResult extends IPCSection {
   relevance: "high" | "medium" | "low";
@@ -18,6 +20,7 @@ const Results = () => {
   const query = searchParams.get("q") || "";
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     if (query) {
@@ -52,7 +55,7 @@ const Results = () => {
         
         // Check tag matches
         section.tags.forEach(tag => {
-          if (searchTerms.some(term => tag.includes(term))) {
+          if (searchTerms.some(term => tag.toLowerCase().includes(term))) {
             score += 2;
           }
         });
@@ -97,7 +100,7 @@ const Results = () => {
         <Navbar />
         
         <div className="flex-1 overflow-y-auto">
-          <div className="container px-6 py-8 max-w-5xl mx-auto">
+          <div className={cn("container py-8 mx-auto", isMobile ? "px-4 max-w-full" : "px-6 max-w-5xl")}>
             <Button variant="ghost" className="mb-4" onClick={() => window.history.back()}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
@@ -120,7 +123,7 @@ const Results = () => {
               </div>
             ) : results.length > 0 ? (
               <>
-                <div className="bg-white p-4 border border-border rounded-lg mb-6">
+                <div className="premium-card mb-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <h2 className="font-semibold text-lg text-justice-navy">
@@ -148,7 +151,7 @@ const Results = () => {
                   </div>
                 </div>
                 
-                <div className="bg-white p-6 border border-border rounded-lg mb-6">
+                <div className="premium-card mb-6">
                   <div className="flex items-start gap-3">
                     <FilePenLine className="h-6 w-6 text-justice-crimson mt-1" />
                     <div>
@@ -160,6 +163,9 @@ const Results = () => {
                     </div>
                   </div>
                 </div>
+                
+                {/* Add Case Prediction Component */}
+                <CasePrediction />
                 
                 {results.length > 0 && (
                   <div className="mb-6">
@@ -179,7 +185,7 @@ const Results = () => {
               </>
             ) : (
               <div className="text-center py-12">
-                <div className="bg-justice-lightBlue p-8 rounded-lg inline-block mb-4">
+                <div className="premium-card p-8 inline-block mb-4">
                   <FileText className="h-12 w-12 text-justice-navy mx-auto mb-2" />
                 </div>
                 <h2 className="text-xl font-semibold mb-2">No Results Found</h2>
