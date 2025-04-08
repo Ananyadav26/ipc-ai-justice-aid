@@ -6,7 +6,7 @@ export function ResultsDisclaimer() {
   
   return (
     <div className="mt-10 text-center">
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-gray-500 dark:text-gray-400">
         {t("app.disclaimer")}
       </p>
     </div>
