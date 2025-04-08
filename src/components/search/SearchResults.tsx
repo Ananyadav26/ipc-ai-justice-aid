@@ -11,9 +11,11 @@ import { ipcSections, IPCSection } from "@/lib/ipcData";
 import { ArrowLeft } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n/LanguageContext";
 
 interface SearchResult extends IPCSection {
   relevance: "high" | "medium" | "low";
+  score?: number; // Added for sorting only
 }
 
 interface SearchResultsProps {
@@ -24,6 +26,7 @@ export function SearchResults({ query }: SearchResultsProps) {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
   const isMobile = useIsMobile();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (query) {
@@ -112,15 +115,19 @@ export function SearchResults({ query }: SearchResultsProps) {
   }
 
   return (
-    <div className={cn(isMobile ? "px-4 max-w-full" : "px-6 max-w-5xl")}>
+    <div className={cn(isMobile ? "px-2 max-w-full" : "px-6 max-w-5xl mx-auto")}>
       <Button variant="ghost" className="mb-4" onClick={() => window.history.back()}>
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Back
+        {t("nav.back")}
       </Button>
       
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-justice-navy mb-2">Search Results</h1>
-        <p className="text-gray-600">Showing results for: <span className="font-medium">{query}</span></p>
+        <h1 className={cn("font-bold text-justice-navy mb-2", isMobile ? "text-xl" : "text-2xl")}>
+          {t("results.title")}
+        </h1>
+        <p className="text-gray-600">
+          {t("results.showing")} <span className="font-medium">{query}</span>
+        </p>
       </div>
       
       <ResultsSummary 
@@ -136,17 +143,21 @@ export function SearchResults({ query }: SearchResultsProps) {
       
       {results.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-justice-navy mb-4">Applicable IPC Sections</h2>
-          {results.map((result) => (
-            <ResultCard
-              key={result.section}
-              section={result.section}
-              title={result.title}
-              description={result.description}
-              punishment={result.punishment}
-              relevance={result.relevance}
-            />
-          ))}
+          <h2 className={cn("font-semibold text-justice-navy mb-4", isMobile ? "text-lg" : "text-xl")}>
+            {t("results.sections")}
+          </h2>
+          <div className={cn("grid gap-4", isMobile ? "grid-cols-1" : "grid-cols-1 md:grid-cols-1")}>
+            {results.map((result) => (
+              <ResultCard
+                key={result.section}
+                section={result.section}
+                title={result.title}
+                description={result.description}
+                punishment={result.punishment}
+                relevance={result.relevance}
+              />
+            ))}
+          </div>
         </div>
       )}
       

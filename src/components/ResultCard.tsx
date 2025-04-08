@@ -3,6 +3,8 @@ import { Bookmark, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/lib/i18n/LanguageContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ResultCardProps {
   section: string;
@@ -13,6 +15,9 @@ interface ResultCardProps {
 }
 
 export function ResultCard({ section, title, description, punishment, relevance = "medium" }: ResultCardProps) {
+  const { t } = useTranslation();
+  const isMobile = useIsMobile();
+  
   const handleBookmark = () => {
     toast({
       title: "Section Bookmarked",
@@ -42,33 +47,42 @@ export function ResultCard({ section, title, description, punishment, relevance 
   };
 
   return (
-    <div className={cn("law-card", getRelevanceBorder())}>
+    <div className={cn(
+      "law-card", 
+      getRelevanceBorder(),
+      isMobile ? "p-4" : "p-6"
+    )}>
       <div className="flex justify-between items-start">
         <div>
           <h3 className="law-section">IPC Section {section}</h3>
-          <h2 className="text-xl font-semibold mb-2 text-justice-navy">{title}</h2>
+          <h2 className={cn(
+            "font-semibold mb-2 text-justice-navy",
+            isMobile ? "text-lg" : "text-xl" 
+          )}>
+            {title}
+          </h2>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="icon" onClick={handleBookmark}>
-            <Bookmark size={16} />
+          <Button variant="outline" size={isMobile ? "sm" : "icon"} onClick={handleBookmark}>
+            <Bookmark size={isMobile ? 14 : 16} />
           </Button>
-          <Button variant="outline" size="icon" onClick={handleShare}>
-            <Share2 size={16} />
+          <Button variant="outline" size={isMobile ? "sm" : "icon"} onClick={handleShare}>
+            <Share2 size={isMobile ? 14 : 16} />
           </Button>
         </div>
       </div>
       
-      <p className="law-description">{description}</p>
+      <p className={cn("law-description", isMobile ? "text-sm" : "text-base")}>{description}</p>
       
       {punishment && (
-        <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
-          <span className="font-semibold text-justice-crimson">Punishment: </span>
-          <span>{punishment}</span>
+        <div className="bg-gray-50 p-3 rounded-md border border-gray-200 mt-3">
+          <span className="font-semibold text-justice-crimson">{t("results.punishment")} </span>
+          <span className={isMobile ? "text-sm" : ""}>{punishment}</span>
         </div>
       )}
       
       <div className="mt-4 flex items-center">
-        <span className="text-sm text-gray-500 mr-2">Relevance:</span>
+        <span className="text-sm text-gray-500 mr-2">{t("results.relevance")}</span>
         <div className="flex gap-1">
           {["high", "medium", "low"].map((level) => (
             <div 

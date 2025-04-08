@@ -3,6 +3,8 @@ import { Bell, User, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/components/ui/use-toast";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { useTranslation } from "@/lib/i18n/LanguageContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,17 +17,18 @@ import {
 export function Navbar() {
   const isMobile = useIsMobile();
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   const handleNotificationClick = () => {
     toast({
-      title: "Notifications",
+      title: t("action.notifications"),
       description: "You have no new notifications",
     });
   };
   
   const handleBookClick = () => {
     toast({
-      title: "Legal Resources",
+      title: t("action.resources"),
       description: "Access to legal resources will be available in the next update",
     });
   };
@@ -33,11 +36,13 @@ export function Navbar() {
   return (
     <div className="h-16 border-b border-border bg-white/80 backdrop-blur-sm flex items-center justify-between px-4 sticky top-0 z-10">
       <div>
-        <h1 className="text-xl font-semibold text-justice-navy md:block hidden">IPC AI Justice Aid</h1>
+        <h1 className="text-xl font-semibold text-justice-navy md:block hidden">{t("app.name")}</h1>
         <h1 className="text-lg font-semibold text-justice-navy md:hidden">IPC Aid</h1>
       </div>
 
       <div className="flex items-center gap-2">
+        <LanguageSelector />
+        
         <Button variant="ghost" size="icon" className="text-gray-600" onClick={handleBookClick}>
           <BookOpen size={20} />
         </Button>
@@ -53,17 +58,17 @@ export function Navbar() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("action.profile")}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => toast({ title: "Profile", description: "Profile page coming soon" })}>
-              Profile
+            <DropdownMenuItem onClick={() => toast({ title: t("action.profile"), description: "Profile page coming soon" })}>
+              {t("action.profile")}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => toast({ title: "Settings", description: "Settings page coming soon" })}>
-              Settings
+            <DropdownMenuItem onClick={() => toast({ title: t("action.settings"), description: "Settings page coming soon" })}>
+              {t("action.settings")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => toast({ title: "Logged Out", description: "You have been logged out" })}>
-              Log out
+              {t("action.logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

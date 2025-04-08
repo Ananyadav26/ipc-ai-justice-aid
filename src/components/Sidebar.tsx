@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Home, Search, History, Info, Menu, X, BookOpen, Gavel } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useTranslation } from "@/lib/i18n/LanguageContext";
 
 interface SidebarLinkProps {
   to: string;
@@ -40,11 +41,14 @@ export function Sidebar() {
   const [expanded, setExpanded] = useState(true);
   const isMobile = useIsMobile();
   const location = useLocation();
+  const { t } = useTranslation();
   
   // Set expanded to false on mobile by default
   useEffect(() => {
     if (isMobile) {
       setExpanded(false);
+    } else {
+      setExpanded(true);
     }
   }, [isMobile]);
   
@@ -65,13 +69,14 @@ export function Sidebar() {
     <div
       className={cn(
         "h-screen bg-justice-navy text-white flex flex-col border-r border-sidebar-border transition-all duration-300 absolute md:relative z-20",
-        expanded ? "w-64" : "w-16"
+        expanded ? "w-64" : "w-16",
+        isMobile && expanded ? "shadow-lg" : ""
       )}
     >
       <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
         <div className={cn("flex items-center gap-3", !expanded && "hidden")}>
           <Gavel className="h-6 w-6 text-justice-gold" />
-          <h1 className="font-bold text-lg">IPC Justice Aid</h1>
+          <h1 className="font-bold text-lg">{t("app.name")}</h1>
         </div>
         <Button 
           variant="ghost" 
@@ -84,17 +89,17 @@ export function Sidebar() {
       </div>
       
       <div className="flex-1 py-6 flex flex-col gap-2 px-2">
-        <SidebarLink to="/" icon={<Home size={20} />} label="Home" expanded={expanded} onClick={handleLinkClick} />
-        <SidebarLink to="/search" icon={<Search size={20} />} label="Search" expanded={expanded} onClick={handleLinkClick} />
-        <SidebarLink to="/history" icon={<History size={20} />} label="History" expanded={expanded} onClick={handleLinkClick} />
-        <SidebarLink to="/about" icon={<Info size={20} />} label="About" expanded={expanded} onClick={handleLinkClick} />
+        <SidebarLink to="/" icon={<Home size={20} />} label={t("nav.home")} expanded={expanded} onClick={handleLinkClick} />
+        <SidebarLink to="/search" icon={<Search size={20} />} label={t("nav.search")} expanded={expanded} onClick={handleLinkClick} />
+        <SidebarLink to="/history" icon={<History size={20} />} label={t("nav.history")} expanded={expanded} onClick={handleLinkClick} />
+        <SidebarLink to="/about" icon={<Info size={20} />} label={t("nav.about")} expanded={expanded} onClick={handleLinkClick} />
       </div>
       
       <div className="p-4 border-t border-sidebar-border flex justify-center">
         {expanded ? (
           <div className="text-xs text-center text-white/70">
-            <p>IPC AI Justice Aid</p>
-            <p>v1.0.0</p>
+            <p>{t("app.name")}</p>
+            <p>{t("app.version")}</p>
           </div>
         ) : (
           <Link to="/about" className="text-white/70 hover:text-white transition-colors">
